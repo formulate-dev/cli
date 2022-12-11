@@ -1,13 +1,16 @@
 package cmd
 
 import (
+	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"path"
+	"path/filepath"
 
 	"github.com/BurntSushi/toml"
+	"github.com/fatih/color"
 	"github.com/formulate-dev/cli/api"
 	"github.com/formulate-dev/cli/model"
 	"github.com/spf13/cobra"
@@ -52,6 +55,12 @@ var newCmd = &cobra.Command{
 
 		_, err = io.Copy(f, r.Body)
 		errExit(err)
+
+		dirAbsolute, err := filepath.Abs(dir)
+		errExit(err)
+
+		color.Green("Created form '%s' at %s.", title, dirAbsolute)
+		fmt.Println("\nGetting started:\n- Make changes to `index.js` and run `formulate preview`\n- Run `formulate publish` when you're ready to share your form\n- Docs: https://formulate.dev/docs")
 	},
 }
 
