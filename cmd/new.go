@@ -17,11 +17,17 @@ import (
 )
 
 var newCmd = &cobra.Command{
-	Use:   "new",
+	Use:   "new [flags] DIR",
 	Short: "Create a new form",
+	Args: func(cmd *cobra.Command, args []string) error {
+		if err := cobra.ExactArgs(1)(cmd, args); err != nil {
+			return fmt.Errorf("please set a `DIR` to create for the new form")
+		}
+		return nil
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		title, _ := cmd.Flags().GetString("title")
-		dir, _ := cmd.Flags().GetString("dir")
+		dir := args[0]
 
 		// 1. Create directory
 		err := os.Mkdir(dir, 0755)
@@ -68,6 +74,5 @@ func init() {
 	rootCmd.AddCommand(newCmd)
 
 	newCmd.Flags().StringP("title", "t", "Untitled Form", "What should this form be called?")
-	newCmd.Flags().StringP("dir", "d", "untitled-form", "Local directory to create")
 	// newCmd.Flags().BoolP("git", "g", false, "Initialize a git repository")
 }

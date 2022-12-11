@@ -16,8 +16,9 @@ import (
 
 // saveCmd represents the save command
 var saveCmd = &cobra.Command{
-	Use:   "save",
-	Short: "Persist local changes to formulate.dev",
+	Use:     "save",
+	Aliases: []string{"s"},
+	Short:   "Persist local changes to formulate.dev",
 	Run: func(cmd *cobra.Command, args []string) {
 		config := model.Config{}
 		_, err := toml.DecodeFile("formulate.toml", &config)

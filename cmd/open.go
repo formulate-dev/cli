@@ -13,30 +13,45 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// openCmd represents the open command
-var openCmd = &cobra.Command{
-	Use:   "open",
+func loadConfig() *model.Config {
+	config := model.Config{}
+	_, err := toml.DecodeFile("formulate.toml", &config)
+	errExit(err)
+	return &config
+}
+
+var manageCmd = &cobra.Command{
+	Use:   "manage",
 	Short: "Open the settings page for this form on formulate.dev",
 	Run: func(cmd *cobra.Command, args []string) {
-		config := model.Config{}
-		_, err := toml.DecodeFile("formulate.toml", &config)
-		errExit(err)
-
+		config := loadConfig()
 		url := fmt.Sprintf("https://formulate.dev/manage?id=%s&secret=%s", config.Id, config.Secret)
 		util.OpenInBrowser(url)
 	},
 }
 
+var previewCmd = &cobra.Command{
+	Use:   "preview",
+	Short: "Preview unpublished changes to this form on formulate.dev",
+	Run: func(cmd *cobra.Command, args []string) {
+		config := loadConfig()
+		url := fmt.Sprintf("https://formulate.dev/form/%s?preview=1", config.Id)
+		util.OpenInBrowser(url)
+	},
+}
+
+var shareCmd = &cobra.Command{
+	Use:   "share",
+	Short: "View the last-published version of this form on formulate.dev",
+	Run: func(cmd *cobra.Command, args []string) {
+		config := loadConfig()
+		url := fmt.Sprintf("https://formulate.dev/form/%s", config.Id)
+		util.OpenInBrowser(url)
+	},
+}
+
 func init() {
-	rootCmd.AddCommand(openCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// openCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// openCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	rootCmd.AddCommand(manageCmd)
+	rootCmd.AddCommand(previewCmd)
+	rootCmd.AddCommand(shareCmd)
 }

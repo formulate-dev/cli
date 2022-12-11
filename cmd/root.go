@@ -9,6 +9,9 @@ import (
 var rootCmd = &cobra.Command{
 	Use:   "formulate",
 	Short: "Command-line interface to formulate.dev",
+	CompletionOptions: cobra.CompletionOptions{
+		DisableDefaultCmd: true,
+	},
 }
 
 func Execute() {
