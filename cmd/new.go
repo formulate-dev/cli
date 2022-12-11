@@ -41,7 +41,7 @@ var newCmd = &cobra.Command{
 		defer f.Close()
 
 		encoder := toml.NewEncoder(f)
-		err = encoder.Encode(model.Config{Id: form.Id, Secret: form.Secret})
+		err = encoder.Encode(model.Config{Title: title, Id: form.Id, Secret: form.Secret})
 		errExit(err)
 
 		// 5. Create d.ts
@@ -60,7 +60,7 @@ var newCmd = &cobra.Command{
 		errExit(err)
 
 		color.Green("Created form '%s' at %s.", title, dirAbsolute)
-		fmt.Println("\nGetting started:\n- Make changes to `index.js` and run `formulate preview`\n- Run `formulate publish` when you're ready to share your form\n- Docs: https://formulate.dev/docs")
+		fmt.Println("\nGetting started:\n- Make changes to `index.js` and run `formulate save` to persist your changes to formulate.dev\n- Run `formulate publish` when you're ready to share your form\n- Docs: https://formulate.dev/docs")
 	},
 }
 

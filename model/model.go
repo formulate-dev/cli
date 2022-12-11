@@ -9,6 +9,7 @@ type Form struct {
 }
 
 type Config struct {
+	Title  string `toml:"title"`
 	Id     string `toml:"id"`
 	Secret string `toml:"secret"`
 }
