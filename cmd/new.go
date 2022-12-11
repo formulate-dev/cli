@@ -1,7 +1,9 @@
 package cmd
 
 import (
+	"io"
 	"io/ioutil"
+	"net/http"
 	"os"
 	"path"
 
@@ -18,21 +20,37 @@ var newCmd = &cobra.Command{
 		title, _ := cmd.Flags().GetString("title")
 		dir, _ := cmd.Flags().GetString("dir")
 
+		// 1. Create directory
 		err := os.Mkdir(dir, 0755)
 		errExit(err)
 
+		// 2. Create form on formulate.dev
 		form, err := api.CreateForm(title)
 		errExit(err)
 
+		// 3. Create script
 		err = ioutil.WriteFile(path.Join(dir, "index.js"), []byte(form.Script), 0755)
 		errExit(err)
 
+		// 4. Create config file
 		f, err := os.Create(path.Join(dir, "formulate.toml"))
 		errExit(err)
 		defer f.Close()
 
 		encoder := toml.NewEncoder(f)
 		err = encoder.Encode(model.Config{Id: form.Id, Secret: form.Secret})
+		errExit(err)
+
+		// 5. Create d.ts
+		r, err := http.Get("https://raw.githubusercontent.com/formulate-dev/typings/main/index.d.ts")
+		errExit(err)
+		defer r.Body.Close()
+
+		f, err = os.Create(path.Join(dir, "index.d.ts"))
+		errExit(err)
+		defer f.Close()
+
+		_, err = io.Copy(f, r.Body)
 		errExit(err)
 	},
 }
