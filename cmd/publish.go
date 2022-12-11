@@ -13,11 +13,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// saveCmd represents the save command
-var saveCmd = &cobra.Command{
-	Use:     "save",
-	Aliases: []string{"s"},
-	Short:   "Persist local changes to formulate.dev",
+var publishCmd = &cobra.Command{
+	Use:   "publish",
+	Short: "Persist local changes to formulate.dev and publish them",
 	Run: func(cmd *cobra.Command, args []string) {
 		config := loadConfig()
 
@@ -31,14 +29,13 @@ var saveCmd = &cobra.Command{
 			Title:  config.Title,
 		}
 
-		err = api.UpdateForm(form)
+		err = api.PublishForm(form)
 		errExit(err)
 
-		color.Green("Updated form '%s'", config.Title)
+		color.Green("Published form '%s'.", config.Title)
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(saveCmd)
-	saveCmd.Flags().BoolP("preview", "p", false, "Open this form's Preview URL in a new browser window")
+	rootCmd.AddCommand(publishCmd)
 }

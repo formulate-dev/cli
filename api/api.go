@@ -60,3 +60,31 @@ func UpdateForm(form model.Form) error {
 
 	return nil
 }
+
+func PublishForm(form model.Form) error {
+	requestBody, err := json.Marshal(form)
+	if err != nil {
+		return err
+	}
+
+	url := fmt.Sprintf("%s/publish?id=%s&secret=%s", BASE_URL, form.Id, form.Secret)
+
+	client := &http.Client{}
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(requestBody))
+	if err != nil {
+		return err
+	}
+	req.Header.Set("Content-Type", "application/json")
+
+	r, err := client.Do(req)
+	if err != nil {
+		return err
+	}
+	defer r.Body.Close()
+
+	if r.StatusCode != 200 {
+		return fmt.Errorf("failed to publish form – invalid status code %d", r.StatusCode)
+	}
+
+	return nil
+}
