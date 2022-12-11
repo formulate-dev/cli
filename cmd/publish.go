@@ -23,8 +23,8 @@ var publishCmd = &cobra.Command{
 		errExit(err)
 
 		form := model.Form{
-			Id:     config.Id,
-			Secret: config.Secret,
+			Id:     config.Internal.Id,
+			Secret: config.Internal.Secret,
 			Script: string(script),
 			Title:  config.Title,
 		}

@@ -88,3 +88,46 @@ func PublishForm(form model.Form) error {
 
 	return nil
 }
+
+type setCustomIdResponse struct {
+	Success bool   `json:"success"`
+	Message string `json:"message"`
+}
+
+func SetCustomId(form *model.Form, id string) error {
+	requestBody, err := json.Marshal(map[string]string{"customId": id})
+	if err != nil {
+		return err
+	}
+
+	url := fmt.Sprintf("%s/set_custom_id?id=%s&secret=%s", BASE_URL, form.Id, form.Secret)
+
+	client := &http.Client{}
+	req, err := http.NewRequest("PUT", url, bytes.NewBuffer(requestBody))
+	if err != nil {
+		return err
+	}
+	req.Header.Set("Content-Type", "application/json")
+
+	r, err := client.Do(req)
+	if err != nil {
+		return err
+	}
+	defer r.Body.Close()
+
+	if r.StatusCode != 200 {
+		return fmt.Errorf("failed to set custom form ID – invalid status code %d", r.StatusCode)
+	}
+
+	var responseData setCustomIdResponse
+	err = json.NewDecoder(r.Body).Decode(&responseData)
+	if err != nil {
+		return err
+	}
+
+	if !responseData.Success {
+		return fmt.Errorf("failed to set custom form ID: %s", responseData.Message)
+	}
+
+	return nil
+}

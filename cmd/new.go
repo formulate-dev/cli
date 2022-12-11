@@ -47,7 +47,13 @@ var newCmd = &cobra.Command{
 		defer f.Close()
 
 		encoder := toml.NewEncoder(f)
-		err = encoder.Encode(model.Config{Title: title, Id: form.Id, Secret: form.Secret})
+		err = encoder.Encode(model.Config{
+			Title: title,
+			Internal: model.ConfigInternal{
+				Id:     form.Id,
+				Secret: form.Secret,
+			},
+		})
 		errExit(err)
 
 		// 5. Create d.ts

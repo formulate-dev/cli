@@ -25,7 +25,7 @@ var manageCmd = &cobra.Command{
 	Short: "Open the settings page for this form on formulate.dev",
 	Run: func(cmd *cobra.Command, args []string) {
 		config := loadConfig()
-		url := fmt.Sprintf("https://formulate.dev/manage?id=%s&secret=%s", config.Id, config.Secret)
+		url := fmt.Sprintf("https://formulate.dev/manage?id=%s&secret=%s", config.Internal.Id, config.Internal.Secret)
 		util.OpenInBrowser(url)
 	},
 }
@@ -35,7 +35,7 @@ var previewCmd = &cobra.Command{
 	Short: "Preview unpublished changes to this form on formulate.dev",
 	Run: func(cmd *cobra.Command, args []string) {
 		config := loadConfig()
-		url := fmt.Sprintf("https://formulate.dev/form/%s?preview=1", config.Id)
+		url := fmt.Sprintf("https://formulate.dev/form/%s?preview=1", config.Internal.Id)
 		util.OpenInBrowser(url)
 	},
 }
@@ -45,7 +45,7 @@ var shareCmd = &cobra.Command{
 	Short: "View the last-published version of this form on formulate.dev",
 	Run: func(cmd *cobra.Command, args []string) {
 		config := loadConfig()
-		url := fmt.Sprintf("https://formulate.dev/form/%s", config.Id)
+		url := fmt.Sprintf("https://formulate.dev/form/%s", config.Internal.Id)
 		util.OpenInBrowser(url)
 	},
 }
