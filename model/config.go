@@ -6,6 +6,7 @@ type Config struct {
 }
 
 type ConfigInternal struct {
+	Email    string `toml:"email"`
 	CustomId string `toml:"custom_id"`
 	Id       string `toml:"id"`
 	Secret   string `toml:"secret"`

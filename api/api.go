@@ -131,3 +131,74 @@ func SetCustomId(form *model.Form, id string) error {
 
 	return nil
 }
+
+func VerifyEmail(form *model.Form, email string) error {
+	requestBody, err := json.Marshal(map[string]string{"email": email})
+	if err != nil {
+		return err
+	}
+
+	url := fmt.Sprintf("%s/verify_email?id=%s&secret=%s", BASE_URL, form.Id, form.Secret)
+
+	client := &http.Client{}
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(requestBody))
+	if err != nil {
+		return err
+	}
+	req.Header.Set("Content-Type", "application/json")
+
+	r, err := client.Do(req)
+	if err != nil {
+		return err
+	}
+	defer r.Body.Close()
+
+	if r.StatusCode != 200 {
+		return fmt.Errorf("failed to send verification email – invalid status code %d", r.StatusCode)
+	}
+
+	return nil
+}
+
+type setEmailResponse struct {
+	Success bool   `json:"success"`
+	Message string `json:"message"`
+}
+
+func SetEmail(form *model.Form, code string) error {
+	requestBody, err := json.Marshal(map[string]string{"verifyCode": code})
+	if err != nil {
+		return err
+	}
+
+	url := fmt.Sprintf("%s/set_email?id=%s&secret=%s", BASE_URL, form.Id, form.Secret)
+
+	client := &http.Client{}
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(requestBody))
+	if err != nil {
+		return err
+	}
+	req.Header.Set("Content-Type", "application/json")
+
+	r, err := client.Do(req)
+	if err != nil {
+		return err
+	}
+	defer r.Body.Close()
+
+	if r.StatusCode != 200 {
+		return fmt.Errorf("failed to verify email address – invalid status code %d", r.StatusCode)
+	}
+
+	var responseData setEmailResponse
+	err = json.NewDecoder(r.Body).Decode(&responseData)
+	if err != nil {
+		return err
+	}
+
+	if !responseData.Success {
+		return fmt.Errorf("failed to verify email address: %s", responseData.Message)
+	}
+
+	return nil
+}
