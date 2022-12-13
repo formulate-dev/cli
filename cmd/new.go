@@ -27,6 +27,7 @@ var newCmd = &cobra.Command{
 	},
 	Run: func(cmd *cobra.Command, args []string) {
 		title, _ := cmd.Flags().GetString("title")
+		template, _ := cmd.Flags().GetString("copy")
 		dir := args[0]
 
 		// 1. Create directory
@@ -34,8 +35,9 @@ var newCmd = &cobra.Command{
 		errExit(err)
 
 		// 2. Create form on formulate.dev
-		form, err := api.CreateForm(title)
+		form, err := api.CreateForm(title, template)
 		errExit(err)
+		title = form.Title
 
 		// 3. Create script
 		err = ioutil.WriteFile(path.Join(dir, "index.js"), []byte(form.Script), 0755)
@@ -79,6 +81,6 @@ var newCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(newCmd)
 
-	newCmd.Flags().StringP("title", "t", "Untitled Form", "What should this form be called?")
-	// newCmd.Flags().BoolP("git", "g", false, "Initialize a git repository")
+	newCmd.Flags().StringP("title", "t", "", "What should this form be called?")
+	newCmd.Flags().StringP("copy", "c", "", "Pass the ID of a form to use as a starting point")
 }

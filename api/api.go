@@ -13,8 +13,8 @@ const (
 	BASE_URL = "https://formulate-form.0xfff.workers.dev"
 )
 
-func CreateForm(title string) (form model.Form, err error) {
-	requestBody, err := json.Marshal(map[string]string{"title": title})
+func CreateForm(title, template string) (form model.Form, err error) {
+	requestBody, err := json.Marshal(map[string]string{"title": title, "template": template})
 	if err != nil {
 		return
 	}
