@@ -73,7 +73,12 @@ var newCmd = &cobra.Command{
 		dirAbsolute, err := filepath.Abs(dir)
 		errExit(err)
 
-		color.Green("Created form '%s' at %s.", title, dirAbsolute)
+		if title == "" {
+			color.Green("Created form at %s.", dirAbsolute)
+		} else {
+			color.Green("Created form '%s' at %s.", title, dirAbsolute)
+		}
+
 		fmt.Println("\nGetting started:\n- Make changes to `index.js` and run `formulate save` to persist your changes to formulate.dev\n- Run `formulate publish` when you're ready to share your form\n- Docs: https://formulate.dev/docs")
 	},
 }

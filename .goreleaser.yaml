@@ -28,3 +28,12 @@ release:
   github:
     owner: formulate-dev
     name: cli
+brews:
+  -
+    tap:
+      owner: formulate-dev
+      name: homebrew-tap
+      token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
+    license: "AGPL"
+    homepage: "https://formulate.dev"
+    description: "Build forms & surveys with code"
